@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./auth-options";
+import { authOptions } from "@/auth-options";
+import { NextRequest, NextResponse } from "next/server";
 
+// Protect routes: checkout + admin
 export async function middleware(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
@@ -13,6 +14,7 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
+// Apply middleware to these routes
 export const config = {
   matcher: ["/checkout", "/admin/:path*"],
 };
