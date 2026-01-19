@@ -1,13 +1,18 @@
-import { auth } from "@/auth";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth-options";
 
-export default auth((req: NextRequest) => {
-  if (!req.auth) {
+export async function middleware(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
     const url = new URL("/login", req.url);
-    return Response.redirect(url);
+    return NextResponse.redirect(url);
   }
-});
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: ["/checkout"],
+  matcher: ["/checkout", "/admin/:path*"],
 };
